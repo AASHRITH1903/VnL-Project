@@ -174,7 +174,7 @@ def generate_h5(model, video_ids, num_clips, outfile, device):
                                                   dtype=np.float32)
                     feat_motion = fd.create_dataset('motion_features', (dataset_size, C, D),
                                                   dtype=np.float32)
-                    video_ids_dset = fd.create_dataset('ids', shape=(dataset_size,), dtype=np.int)
+                    video_ids_dset = fd.create_dataset('ids', shape=(dataset_size,), dtype=int)
             elif args.feature_type == 'motion':
                 clip_torch = torch.FloatTensor(np.asarray(clips)).cuda()
                 if valid:
@@ -224,8 +224,9 @@ if __name__ == '__main__':
     args = parser.parse_args()
     
     # set gpu
-    if args.model != 'resnext101':
+    if args.model != 'resnext101' and torch.cuda.is_available():
         torch.cuda.set_device(args.gpu_id)
+
     torch.manual_seed(args.seed)
     np.random.seed(args.seed)
     # annotation files
@@ -270,20 +271,25 @@ if __name__ == '__main__':
                     args.outfile.format(args.dataset, args.dataset, args.feature_type))
         
     elif args.dataset == 'sutd-traffic':
+        print("preprocess 1")
         args.video_file = './data/annotation_file/R3_all.jsonl'
         args.video_dir = './data/raw_videos/'
         args.outfile = './data/{}/{}_{}_feat.h5'
         video_paths = sutd_traffic.load_video_paths(args)
+        print("preprocess 2")
         random.shuffle(video_paths)
+        print("preprocess 3")
         # load model
         if args.model == 'clip_image':
             device = "cuda" if torch.cuda.is_available() else "cpu"
             model, preprocess = clip.load("ViT-B/32", device=device)
+            print("preprocess 4")
         elif args.model == 'resnet101':
             model = build_resnet()
         elif args.model == 'resnext101':
             model = build_resnext()
         else:
             pass
+        print("preprocess 5")
         generate_h5(model, video_paths, args.num_clips,
                     args.outfile.format(args.dataset, args.dataset, args.feature_type), device)

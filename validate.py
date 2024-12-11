@@ -44,7 +44,9 @@ def validate(cfg, tempaligner, semanticaligner, clip_model, data, device, write_
             video_appearance_feat = batch_clips_data.view(batch_size, -1, feat_dim)
             answers_features = answers_features.view(batch_size, num_ans, -1)
 
-            answers = answers.cuda().squeeze()
+            # answers = answers.cuda().squeeze()
+            answers = answers.to(device).squeeze()
+
             batch_inputs = [answers,  answers_features, video_appearance_feat, question_features]
             logits, visual_embedding_decoder = tempaligner(*batch_inputs)
 
@@ -77,8 +79,8 @@ def validate(cfg, tempaligner, semanticaligner, clip_model, data, device, write_
             count += answers.size(0)
             print('avg_acc=',total_acc/count)
         acc = total_acc / count
-        print('train set size:',count)
-        print('acc on trainset:',acc)
+        print('test set size:',count)
+        print('acc on testset:',acc)
 
     if not write_preds:
         return acc
@@ -102,8 +104,8 @@ if __name__ == '__main__':
 
     ############################################################################ 
     ####uncomment the following lines to validate the trained model####
-#    temp_ckpt = "./pretrained/tempaligner_49.pt"
-#    semantic_ckpt = "./pretrained/semanticaligner_49.pt"
+    # temp_ckpt = "./pretrained/tempaligner_49_downloaded.pt"
+    # semantic_ckpt = "./pretrained/semanticaligner_49_downloaded.pt"
     ############################################################################
 
     assert os.path.exists(temp_ckpt)
@@ -113,7 +115,10 @@ if __name__ == '__main__':
     model_kwargs = loaded['model_kwargs']
     if cfg.dataset.name == 'sutd-traffic':
         cfg.dataset.annotation_file = cfg.dataset.annotation_file.format('test')
+        print("\n\n------\n\n")
+        print(cfg.dataset.appearance_feat)
         cfg.dataset.appearance_feat = os.path.join(cfg.dataset.data_dir, cfg.dataset.appearance_feat.format(cfg.dataset.name))
+        print(cfg.dataset.appearance_feat)
 
     else:
         pass
@@ -137,7 +142,7 @@ if __name__ == '__main__':
         pass
 
     else:
-        device = torch.device('cuda')
+        # device = torch.device('cuda')
         loaded_semantic = torch.load(semantic_ckpt, map_location='cpu') 
         clip_model, clip_preprocess = clip.load("ViT-B/32", device=device)
         clip_model.float()
