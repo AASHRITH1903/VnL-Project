@@ -40,6 +40,7 @@ def train(cfg, args):
     logging.info("number of train instances: {}".format(len(train_loader.dataset)))
     logging.info("Create model.........")
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    print("Using device: ", device)
     clip_model, clip_preprocess = clip.load("ViT-B/32", device=device) 
     clip_model.float()
     model_kwargs = {
@@ -198,8 +199,11 @@ def main():
         cfg_from_file(args.cfg_file)
     assert cfg.dataset.name in ['sutd-traffic']
 
-    if not cfg.multi_gpus:
+    if not cfg.multi_gpus and torch.cuda.is_available():
         torch.cuda.set_device(cfg.gpu_id)
+        print("Cuda available: ", torch.cuda.is_available())
+        print("Cuda device count: ", torch.cuda.device_count())
+        print("Cuda current device: ", torch.cuda.current_device())
     # make logging.info display into both shell and file
     cfg.dataset.save_dir = os.path.join(cfg.dataset.save_dir, cfg.exp_name)
     if not os.path.exists(cfg.dataset.save_dir):
@@ -222,8 +226,10 @@ def main():
 
     if cfg.dataset.name == 'sutd-traffic':
         cfg.dataset.annotation_file = cfg.dataset.annotation_file.format('train')
+        print("Annotation file: ", cfg.dataset.annotation_file)
 
         cfg.dataset.appearance_feat = os.path.join(cfg.dataset.data_dir, cfg.dataset.appearance_feat.format(cfg.dataset.name))
+        print("Appearance feat:", cfg.dataset.appearance_feat)
 
     else:
         pass
