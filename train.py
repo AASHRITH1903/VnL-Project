@@ -139,7 +139,8 @@ def train(cfg, args):
         sys.stdout.flush()
         logging.info("Epoch = %s   avg_loss = %.3f    avg_acc = %.3f" % (epoch, avg_loss, train_accuracy))
 
-        if (epoch+1)%10==0:
+        # if (epoch+1)%10==0:
+        if True:
             ckpt_dir = os.path.join(cfg.dataset.save_dir, 'ckpt')
             if not os.path.exists(ckpt_dir):
                 os.makedirs(ckpt_dir)
