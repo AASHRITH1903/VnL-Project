@@ -14,16 +14,16 @@ We propose Tem-Adapter, which enables the learning of temporal dynamics and comp
 
 ```bash
 conda config --add channels conda-forge
-conda create --name myenv python=3.7
-conda activate myenv
+conda create --name vnl python=3.7
+conda activate vnl
 conda install pytorch==1.8.0 torchvision==0.9.0 torchaudio==0.8.0 cudatoolkit=10.2 -c pytorch
-# downgrade pillow
-pip install pillow==9.0.0
 ```
 
 2. Install dependencies
 
 ```bash
+# downgrade pillow
+pip install pillow==9.0.0
 conda install -c conda-forge ffmpeg
 conda install -c conda-forge scikit-video
 pip install ftfy regex tqdm
