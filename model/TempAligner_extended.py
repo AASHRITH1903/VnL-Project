@@ -39,7 +39,7 @@ class TempAligner(nn.Module):
         decoder_layer = nn.TransformerDecoderLayer(d_model=module_dim, nhead=16) 
         self.transformer_decoder = nn.TransformerDecoder(decoder_layer, num_layers=1)
 
-        self.video_summarizer = VideoSummarizer(d_model=module_dim, nhead=16)
+        self.video_summarizer = VideoSummarizer(embed_dim=module_dim, nhead=16)
 
         init_modules(self.modules(), w_init="xavier_uniform")
 

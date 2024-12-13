@@ -47,9 +47,9 @@ def train(cfg, args):
 
     ###################################################################################
     ###################################################################################
-    ### Change the below paths to load pretrained weights
-    temp_ckpt = './pretrained/released/tempaligner_49.pt'
-    semantic_ckpt = './pretrained/released/semanticaligner_49.pt'
+    ### Uncomment the below paths to load pretrained weights
+    # temp_ckpt = './pretrained/released/tempaligner_49.pt'
+    # semantic_ckpt = './pretrained/released/semanticaligner_49.pt'
 
     loaded = torch.load(temp_ckpt, map_location='cpu')
     model_kwargs = loaded['model_kwargs']
@@ -119,7 +119,7 @@ def train(cfg, args):
             question_features = clip_model.encode_text( question.squeeze() ).float()
             video_appearance_feat = batch_clips_data.view(batch_size, -1, feat_dim) 
             answers_features = answers_features.view(batch_size, num_ans, -1)
-            answers = answers.cuda().squeeze()
+            answers = answers.to(device).squeeze()
             batch_inputs = [answers,  answers_features, video_appearance_feat, question_features]
             optimizer.zero_grad()
             logits, visual_embedding_decoder = tempaligner(*batch_inputs)
