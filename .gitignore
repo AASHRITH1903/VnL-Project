@@ -2,3 +2,5 @@ data
 pretrained
 __pycache__
 .DS_Store
+results
+z_Test.ipynb

@@ -22,4 +22,4 @@ dataset:
   data_dir: "./data/sutd-traffic/"
   save_dir: "results/"
   annotation_file: "./data/sutd-traffic/output_file_{}.jsonl"
-  appearance_feat: "{}_appearance_feat_downloaded.h5"
+  appearance_feat: "{}_appearance_feat.h5"
